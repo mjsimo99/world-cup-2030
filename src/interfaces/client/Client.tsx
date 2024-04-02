@@ -9,6 +9,7 @@ interface Client {
     username: string;
     password: string;
     avatar: string | File ;
+    money: number;
 }
 
 export default Client;
