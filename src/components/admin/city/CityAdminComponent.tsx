@@ -14,7 +14,7 @@ import { useAppDispatch } from '../../../redux/store';
 import City from '../../../interfaces/city/City';
 import DialogCityComponent from './DialogCityComponent';
 import { RootState } from '../../../redux/reducers/RootState';
-import { showConfirmationAlert, showSuccessAlert } from '../../../interceptor/sweetAlertUtils';
+import { showConfirmationAlert } from '../../../interceptor/sweetAlertUtils';
 
 
 const CityAdminComponent: React.FC = () => {
@@ -37,7 +37,6 @@ const CityAdminComponent: React.FC = () => {
         showConfirmationAlert('Delete City', 'Are you sure you want to delete this city?').then(async (result) => {
           if (result.isConfirmed) {
             await dispatch(deleteCity(cityId));
-            showSuccessAlert('Deleted!', 'The city has been deleted.');
             refreshData();
           }
         });
