@@ -1,5 +1,5 @@
 import * as actionTypes from "../actions/actionTypes";
-import City from "../../interfaces/city/City"; 
+import City from "../../interfaces/city/City";
 
 
 export interface CityState {
@@ -39,7 +39,7 @@ const cityReducer = (state = initialState, action: any) => {
       return {
         ...state,
         cities: state.cities.map(city => {
-          if (city.cityId === action.payload.cityId) {
+          if (city.cityId === (action.payload && action.payload.cityId)) {
             return action.payload;
           }
           return city;
@@ -47,7 +47,8 @@ const cityReducer = (state = initialState, action: any) => {
         loading: false,
         error: null,
       };
-    
+
+
     default:
       return state;
   }
