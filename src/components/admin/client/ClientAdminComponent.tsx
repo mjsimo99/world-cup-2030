@@ -14,7 +14,7 @@ import { useAppDispatch } from '../../../redux/store';
 import Client from '../../../interfaces/client/Client';
 import DialogClientComponent from './DialogClientComponent';
 import { RootState } from '../../../redux/reducers/RootState';
-import { showConfirmationAlert, showSuccessAlert } from '../../../interceptor/sweetAlertUtils';
+import { showConfirmationAlert } from '../../../interceptor/sweetAlertUtils';
 
 
 const ClientAdminComponent: React.FC = () => {
@@ -36,7 +36,6 @@ const ClientAdminComponent: React.FC = () => {
         showConfirmationAlert('Delete Client', 'Are you sure you want to delete this client?').then(async (result) => {
             if (result.isConfirmed) {
                 await dispatch(deleteClient(clientId));
-                showSuccessAlert('Deleted!', 'The client has been deleted.');
                 refreshData();
             }
         });
@@ -61,6 +60,7 @@ const ClientAdminComponent: React.FC = () => {
                 <Column field="address" header="Address"></Column>
                 <Column field="email" header="Email"></Column>
                 <Column field="username" header="Username"></Column>
+                <Column field="money" header="Money"></Column>
                 <Column header="Action" headerStyle={{ width: '8rem' }} body={(rowData: Client) => (
                     <div className='flex'>
                         <Button icon="pi pi-pencil" className="p-button-rounded p-button-info mr-2" onClick={() => handleUpdateClient(rowData)} />
