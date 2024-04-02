@@ -9,7 +9,7 @@ import ClientAdminComponent from '../components/admin/client/ClientAdminComponen
 import MatchAdminComponent from '../components/admin/match/MatchAdminComponent';
 import TeamMatchAdminComponent from '../components/admin/teamMatch/Team-MatchAdminComponent';
 import TicketAdminComponent from '../components/admin/ticket/TicketAdminComponent';
-import ErrorPage from '../pages/ErrorPage';
+import ErrorPage from '../components/errorPage/ErrorPage';
 
 const CityAdminComponentWithGuard = withGuard(CityAdminComponent);
 const StadiumAdminComponentWithGuard = withGuard(StadiumAdminComponent);
