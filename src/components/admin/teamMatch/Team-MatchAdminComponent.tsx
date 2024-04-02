@@ -11,7 +11,7 @@ import TeamMatch from '../../../interfaces/team-match/TeamMatch';
 import DialogComponent from './DialogTeam-MatchComponent';
 import { useAppDispatch } from '../../../redux/store';
 import { RootState } from '../../../redux/reducers/RootState';
-import { showConfirmationAlert, showSuccessAlert } from '../../../interceptor/sweetAlertUtils';
+import { showConfirmationAlert } from '../../../interceptor/sweetAlertUtils';
 
 
 const TeamMatchAdminComponent: React.FC = () => {
@@ -34,13 +34,18 @@ const TeamMatchAdminComponent: React.FC = () => {
         showConfirmationAlert('Delete Team Match', 'Are you sure you want to delete this team match?').then(async (result) => {
             if (result.isConfirmed) {
                 await dispatch(deleteTeamMatch(teamId, matchId));
-                showSuccessAlert('Deleted!', 'The team match has been deleted.');
                 refreshData();
             }
         });
     };
     
+    if (loading) {
+        return <div>Loading...</div>; // or any loading indicator
+    }
 
+    if (error) {
+        return <div className="text-red-500">Error: {error}</div>;
+    }
     const handleUpdateTeamMatch = (teamMatch: TeamMatch) => {
         setDialogVisible(true);
 
@@ -55,8 +60,8 @@ const TeamMatchAdminComponent: React.FC = () => {
                 <Column field="teamsName" header="Team Name" />
                 <Column field="date" header="Match Date" />
                 <Column field="time" header="Match Time" />
-                <Column field="team.teamId" header="team" />
-                <Column field="match.matchId" header="match" />
+                <Column field="team.country" header="team" />
+                <Column field="match.name" header="match" />
                 <Column header="Action" headerStyle={{ width: '8rem' }} body={(rowData: TeamMatch) => (
                     <div className='flex'>
                         <Button icon="pi pi-pencil" className="p-button-rounded p-button-primary" onClick={() => handleUpdateTeamMatch(rowData)} />

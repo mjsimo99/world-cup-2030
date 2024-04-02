@@ -10,7 +10,6 @@ export const fetchTeamMatches = () => {
         dispatch({ type: GET_TEAM_Matches, payload: teamMatches });
         } catch (error) {
         console.error("Error fetching team matches:", error);
-        dispatch({ type: GET_TEAM_Matches_ERROR, payload: error });
         }
     }
     }

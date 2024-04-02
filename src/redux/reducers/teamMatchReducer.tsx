@@ -5,6 +5,7 @@ export interface TeamMatchState {
   teamMatches: TeamMatch[];
   loading: boolean;
   error: string | null;
+  
 }
 
 const initialState: TeamMatchState = {
@@ -26,7 +27,7 @@ const teamMatchReducer = (state = initialState, action: any) => {
       return {
         ...state,
         loading: false,
-        error: action.payload,
+        error: action.payload.message, // Store only the error message
       };
     case actionTypes.CREATE_TEAM_MATCH:
       return {

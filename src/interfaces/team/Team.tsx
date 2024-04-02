@@ -1,6 +1,6 @@
 interface Team {
     teamId: number;
-    logo: string | File;
+    logo: string ;
     country: string;
     coach: string;
 }

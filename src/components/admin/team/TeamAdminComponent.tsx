@@ -9,7 +9,7 @@ import Team from '../../../interfaces/team/Team';
 import { useAppDispatch } from '../../../redux/store';
 import DialogTeamComponent from './DialogTeamComponent';
 import { RootState } from '../../../redux/reducers/RootState';
-import { showConfirmationAlert, showSuccessAlert } from '../../../interceptor/sweetAlertUtils';
+import { showConfirmationAlert } from '../../../interceptor/sweetAlertUtils';
 
 const TeamAdminComponent: React.FC = () => {
   const { teams, loading, error } = useSelector((state: RootState) => state.team);
@@ -35,7 +35,6 @@ const TeamAdminComponent: React.FC = () => {
     showConfirmationAlert('Delete Team', 'Are you sure you want to delete this team?').then(async (result) => {
       if (result.isConfirmed) {
         await dispatch(deleteTeam(teamId));
-        showSuccessAlert('Deleted!', 'The team has been deleted.');
         refreshData();
       }
     });
@@ -43,7 +42,7 @@ const TeamAdminComponent: React.FC = () => {
 
   const logoBodyTemplate = (rowData: any) => {
     return (
-      <img src={rowData.logo} alt="Logo" style={{ width: '50px', height: '50px', borderRadius: '30px' }} className="p-shadow-2" />
+      <img src={rowData?.logo} alt="Logo" style={{ width: '50px', height: '50px', borderRadius: '30px' }} className="p-shadow-2" />
     );
   };
 
