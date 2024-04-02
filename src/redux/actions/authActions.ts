@@ -1,8 +1,9 @@
 
 import axios from 'axios';
 import { Dispatch } from 'redux';
-import { LOGIN_SUCCESS, LOGIN_FAILURE, LOGOUT , REGISTER_SUCCESS, REGISTER_FAILURE } from './actionTypes';
+import { LOGIN_SUCCESS, LOGOUT , REGISTER_SUCCESS } from './actionTypes';
 import ApiRegister from '../api/apiRegister';
+import { showErrorAlert } from '../../interceptor/sweetAlertUtils';
 
 
 interface LoginResponse {
@@ -25,17 +26,21 @@ export const login = (username: string, password: string, isAdmin: boolean) => {
       localStorage.setItem('token', token);
       dispatch({ type: LOGIN_SUCCESS, payload: token });
     } catch (error) {
-      dispatch({ type: LOGIN_FAILURE, payload: 'Invalid username or password' });
+      // dispatch({ type: LOGIN_FAILURE, payload: 'Inalid username or password' });
+      showErrorAlert('Error', 'Invalid username or password');
     }
   };
 };
 export const register = (registerData: any) => {
   return async (dispatch: Dispatch) => {
     try {
+      
       const response = await ApiRegister.register(registerData);
       dispatch({ type: REGISTER_SUCCESS, payload: response });
+      
     } catch (error) {
-      dispatch({ type: REGISTER_FAILURE, payload: 'Invalid username or password' });
+      // dispatch({ type: REGISTER_FAILURE, payload: 'Invalid username or password' });
+      showErrorAlert('Error', 'Invalid username or password');
     }
   };
 };
