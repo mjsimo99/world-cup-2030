@@ -112,3 +112,22 @@
 .p-dialog-mask {
     z-index: 1060!important;
 }
+
+
+
+.p-steps-number {
+    background-color: #33946f;
+    color: white;
+}
+.p-menuitem-link {
+    margin-top: 6px;
+}
+
+.pi-credit-card {
+    font-size: 1.2em;
+    margin-right: 10px;
+}
+.p-inputnumber-input {
+    width: 45px;
+    text-align: center;
+}
