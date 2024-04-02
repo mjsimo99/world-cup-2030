@@ -7,7 +7,7 @@ import { RootState } from '../redux/reducers/RootState';
 
 
 // Admin Components
-import NavbarAdmin from '../components/navbaradmin/navbaradmin';
+import NavbarAdmin from '../components/admin/navbaradmin/navbaradmin';
 
 
 // Client Component
