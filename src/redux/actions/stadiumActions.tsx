@@ -30,7 +30,7 @@ export const deleteStadium = (stadiumId: number) => {
 export const createStadium = (stadiumData: Partial<Stadium>) => {
     return async (dispatch: Dispatch) => {
       try {
-        const createdStadium = await ApiStadium.createStadium(stadiumData);
+        const createdStadium = await ApiStadium.createStadium(stadiumData as Stadium)
         dispatch({ type: CREATE_STADIUM, payload: createdStadium });
         return createdStadium; 
       } catch (error) {
@@ -43,7 +43,7 @@ export const createStadium = (stadiumData: Partial<Stadium>) => {
 export const updateStadium = (stadiumId: number, stadiumData: Partial<Stadium>) => {
   return async (dispatch: Dispatch) => {
     try {
-      const updatedStadium = await ApiStadium.updateStadium(stadiumId, stadiumData);
+      const updatedStadium = await ApiStadium.updateStadium(stadiumId, stadiumData  as Stadium)
       dispatch({ type: UPDATE_STADIUM, payload: updatedStadium });
     } catch (error) {
       console.error("Error updating stadium:", error);

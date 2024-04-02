@@ -6,6 +6,7 @@ interface Stadium {
     capacity: number;
     location: string;
     city: City;
+    cityId: number;
     matches: any[]; 
 }
 

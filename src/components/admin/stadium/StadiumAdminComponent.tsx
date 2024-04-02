@@ -10,7 +10,7 @@ import Stadium from '../../../interfaces/stadium/Stadiums';
 import DialogComponent from './DialogStaduimComponent';
 import { useAppDispatch } from '../../../redux/store';
 import { RootState } from '../../../redux/reducers/RootState';
-import { showConfirmationAlert, showSuccessAlert } from '../../../interceptor/sweetAlertUtils';
+import { showConfirmationAlert } from '../../../interceptor/sweetAlertUtils';
 
 const StadiumAdminComponent: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -21,6 +21,7 @@ const StadiumAdminComponent: React.FC = () => {
     useEffect(() => {
         dispatch(fetchStadiums());
     }, [dispatch]);
+    
 
     const refreshData = async () => {
         await dispatch(fetchStadiums());
@@ -31,7 +32,6 @@ const StadiumAdminComponent: React.FC = () => {
         showConfirmationAlert('Delete Stadium', 'Are you sure you want to delete this stadium?').then(async (result) => {
             if (result.isConfirmed) {
                 await dispatch(deleteStadium(stadiumId));
-                showSuccessAlert('Deleted!', 'The stadium has been deleted.');
                 refreshData();
             }
         });
