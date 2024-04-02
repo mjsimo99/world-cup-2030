@@ -1,4 +1,6 @@
 import axios from 'axios';
+import { showErrorAlert, showSuccessAlert } from '../../interceptor/sweetAlertUtils';
+import Stadium from '../../interfaces/stadium/Stadiums';
 
 const API_URL = 'http://localhost:8080/api/stadiums';
 
@@ -15,25 +17,34 @@ const ApiStadium = {
     async deleteStadium(stadiumId: number) {
         try {
             await axios.delete(`${API_URL}/${stadiumId}`);
-        } catch (error) {
-            return error;
+            showSuccessAlert('Stadium deleted', `Stadium deleted successfully`);
+        }catch (error : any) {
+            const errorData = error.response.data;
+            const errorMessages = Object.values(errorData).join(' + ');
+            showErrorAlert('Error deleting stadium', errorMessages);
         }
     },
 
-    async createStadium(stadiumData: any) {
+    async createStadium(stadiumData: Stadium ) {
         try {
             const response = await axios.post(API_URL, stadiumData);
+            showSuccessAlert('Stadium created', `Stadium ${response.data.name} created successfully`);
             return response.data; 
-        } catch (error) {
-            return error;
+        }  catch (error : any) {
+            const errorData = error.response.data;
+            const errorMessages = Object.values(errorData).join(' + ');
+            showErrorAlert('Error creating stadium', errorMessages);
         }
     },
 
-    async updateStadium(stadiumId: number, stadiumData: any) {
+    async updateStadium(stadiumId: number, stadiumData: Stadium) {
         try {
             await axios.put(`${API_URL}/${stadiumId}`, stadiumData);
-        } catch (error) {
-            return error;
+            showSuccessAlert('Stadium updated', `Stadium ${stadiumData.name} updated successfully`);
+        }  catch (error : any) {
+            const errorData = error.response.data;
+            const errorMessages = Object.values(errorData).join(' + ');
+            showErrorAlert('Error updating stadium', errorMessages);
         }
     }
 };
