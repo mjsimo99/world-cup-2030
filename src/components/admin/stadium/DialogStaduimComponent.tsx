@@ -3,14 +3,13 @@ import React, { ChangeEvent, useEffect, useState } from 'react';
 import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
 import { createStadium, updateStadium } from '../../../redux/actions/stadiumActions';
-import { fetchStadiums } from '../../../redux/actions/stadiumActions';
 import Stadium from '../../../interfaces/stadium/Stadiums';
 import { useAppDispatch } from '../../../redux/store';
 import City from '../../../interfaces/city/City';
 import { RootState } from '../../../redux/reducers/RootState';
 import { useSelector } from 'react-redux';
 import { getCities } from '../../../redux/actions/cityActions';
-import { showConfirmationAlert, showSuccessAlert } from '../../../interceptor/sweetAlertUtils';
+import { showConfirmationAlert } from '../../../interceptor/sweetAlertUtils';
 
 
 interface DialogStadiumComponentProps {
@@ -28,6 +27,7 @@ const DialogStadiumComponent: React.FC<DialogStadiumComponentProps> = ({ visible
   useEffect(() => {
     dispatch(getCities());
   }, [dispatch]);
+  
   useEffect(() => {
     setStadiumData(selectedStadium || { name: '', capacity: 0, location: '', city: {} as City, matches: [] });
   }, [selectedStadium]);
@@ -38,14 +38,16 @@ const DialogStadiumComponent: React.FC<DialogStadiumComponentProps> = ({ visible
   };
 
   const handleSaveStadium = async () => {
+    if (!stadiumData.name || !stadiumData.capacity || !stadiumData.location || !stadiumData.city?.cityId) {
+      alert('Please fill out all required fields.');
+      return;
+  }
     try {
       if (selectedStadium) {
         showConfirmationAlert('Update Stadium', 'Are you sure you want to update this stadium?').then(async (result) => {
           if (result.isConfirmed) {
             await dispatch(updateStadium(selectedStadium.stadiumId, stadiumData));
             refreshData();
-          
-            showSuccessAlert('Updated!', 'The stadium has been updated.');
           }
         });
       } else {
@@ -53,7 +55,6 @@ const DialogStadiumComponent: React.FC<DialogStadiumComponentProps> = ({ visible
           if (result.isConfirmed) {
             await dispatch(createStadium(stadiumData));
             refreshData();
-            showSuccessAlert('Created!', 'The stadium has been created.');
           }
         });
       }
@@ -77,15 +78,15 @@ const DialogStadiumComponent: React.FC<DialogStadiumComponentProps> = ({ visible
     <Dialog visible={visible} onHide={onHide} className="p-4 rounded-lg bg-white shadow-md" style={{ width: '600px' }} header={selectedStadium ? "Update Stadium" : "Create Stadium"}>
       <div className="p-field mb-4">
         <label htmlFor="name" className="block text-gray-700">Name</label>
-        <input id="name" type="text" name="name" value={stadiumData.name || ''} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
+        <input id="name" type="text" name="name" value={stadiumData.name || ''} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" required/>
       </div>
       <div className="p-field mb-4">
         <label htmlFor="capacity" className="block text-gray-700">Capacity</label>
-        <input id="capacity" type="number" name="capacity" value={stadiumData.capacity || 0} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
+        <input id="capacity" type="number" name="capacity" value={stadiumData.capacity || 0} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" max={999999} min={20000} required/>
       </div>
       <div className="p-field mb-4">
         <label htmlFor="location" className="block text-gray-700">Location</label>
-        <input id="location" type="text" name="location" value={stadiumData.location || ''} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
+        <input id="location" type="text" name="location" value={stadiumData.location || ''} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" required/>
       </div>
       <div className="p-field mb-4">
         <label htmlFor="city" className="block text-gray-700">City</label>
@@ -95,6 +96,7 @@ const DialogStadiumComponent: React.FC<DialogStadiumComponentProps> = ({ visible
           value={stadiumData.city?.cityId || ''}
           onChange={(e) => handleCityChange(parseInt(e.target.value))}
           className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+          required
         >
           <option value="">Select a city</option>
           {cities.map(city => (

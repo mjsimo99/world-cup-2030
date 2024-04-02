@@ -9,7 +9,7 @@ import Stadium from '../../../interfaces/stadium/Stadiums';
 import { RootState } from '../../../redux/reducers/RootState';
 import { useSelector } from 'react-redux';
 import { fetchStadiums } from '../../../redux/actions/stadiumActions';
-import { showConfirmationAlert, showSuccessAlert } from '../../../interceptor/sweetAlertUtils';
+import { showConfirmationAlert } from '../../../interceptor/sweetAlertUtils';
 
 
 interface DialogMatchComponentProps {
@@ -22,13 +22,13 @@ interface DialogMatchComponentProps {
 const DialogMatchComponent: React.FC<DialogMatchComponentProps> = ({ visible, onHide, refreshData, selectedMatch }) => {
   const dispatch = useAppDispatch();
   const { stadiums } = useSelector((state: RootState) => state.stadium);
-  const [matchData, setMatchData] = useState<Partial<Match>>(selectedMatch || { ticketPrice: 0, ticketAvailable: 0, staduim: {} as Stadium, name: '' });
+  const [matchData, setMatchData] = useState<Partial<Match>>(selectedMatch || { ticketPrice: 0, ticketAvailable: 0, stadium: {} as Stadium, name: '' });
 
   useEffect(() => {
     dispatch(fetchStadiums());
   }, [dispatch]);
   useEffect(() => {
-    setMatchData(selectedMatch || { ticketPrice: 0, ticketAvailable: 0, staduim: {} as Stadium, name: '' });
+    setMatchData(selectedMatch || { ticketPrice: 0, ticketAvailable: 0, stadium: {} as Stadium, name: '' });
   }, [selectedMatch]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -37,12 +37,15 @@ const DialogMatchComponent: React.FC<DialogMatchComponentProps> = ({ visible, on
   };
 
   const handleSaveMatch = async () => {
+    if (!matchData.name || !matchData.ticketPrice || !matchData.ticketAvailable) {
+      alert('Please fill out all required fields.');
+      return;
+    }
     try {
       if (selectedMatch) {
         showConfirmationAlert('Update Match', 'Are you sure you want to update this match?').then(async (result) => {
           if (result.isConfirmed) {
             await dispatch(updateMatch(selectedMatch.matchId, matchData));
-            showSuccessAlert('Updated!', 'The match has been updated.');
             refreshData();
           }
         });
@@ -50,7 +53,6 @@ const DialogMatchComponent: React.FC<DialogMatchComponentProps> = ({ visible, on
         showConfirmationAlert('Create Match', 'Are you sure you want to create a new match?').then(async (result) => {
           if (result.isConfirmed) {
             await dispatch(createMatch(matchData));
-            showSuccessAlert('Created!', 'The match has been created.');
             refreshData();
 
           }
@@ -74,19 +76,19 @@ const DialogMatchComponent: React.FC<DialogMatchComponentProps> = ({ visible, on
 
       <div className="p-field mb-4">
         <label htmlFor="name" className="block text-gray-700">Match Name</label>
-        <input id="name" type="text" name="name" value={matchData.name} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
+        <input id="name" type="text" name="name" value={matchData.name} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" required />
       </div>
       <div className="p-field mb-4">
         <label htmlFor="name" className="block text-gray-700">Ticket Price</label>
-        <input id="ticketPrice" type="number" name="ticketPrice" value={matchData.ticketPrice} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
+        <input id="ticketPrice" type="number" name="ticketPrice" value={matchData.ticketPrice} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" required min={0} max={100} />
       </div>
       <div className="p-field mb-4">
         <label htmlFor="name" className="block text-gray-700">Ticket Available</label>
-        <input id="ticketAvailable" type="number" name="ticketAvailable" value={matchData.ticketAvailable} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
+        <input id="ticketAvailable" type="number" name="ticketAvailable" value={matchData.ticketAvailable} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" required min={0} max={999999} />
       </div>
       <div className="p-field mb-4">
         <label htmlFor="stadium" className="block text-gray-700">Stadium</label>
-        <select id="stadium" name="stadium" value={matchData.staduim?.stadiumId} onChange={(e) => handleStadiumChange(parseInt(e.target.value))} className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+        <select id="stadium" name="stadium" value={matchData.stadium?.stadiumId} onChange={(e) => handleStadiumChange(parseInt(e.target.value))} className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" required>
           <option value="">Select Stadium</option>
           {stadiums.map(stadium => <option key={stadium.stadiumId} value={stadium.stadiumId}>{stadium.name}</option>)}
         </select>

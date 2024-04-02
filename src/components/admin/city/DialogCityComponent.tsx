@@ -4,7 +4,7 @@ import { Button } from 'primereact/button';
 import { createCity, updateCity } from '../../../redux/actions/cityActions';
 import City from '../../../interfaces/city/City';
 import { useAppDispatch } from '../../../redux/store';
-import { showConfirmationAlert, showSuccessAlert } from '../../../interceptor/sweetAlertUtils';
+import { showConfirmationAlert } from '../../../interceptor/sweetAlertUtils';
 
 
 
@@ -38,16 +38,14 @@ const DialogCityComponent: React.FC<DialogCityComponentProps> = ({ visible, onHi
       if (!selectedCity) {
         showConfirmationAlert('Create City', 'Are you sure you want to create a new city?').then(async (result) => {
           if (result.isConfirmed) {
-            await dispatch(createCity(cityData));
-            showSuccessAlert('Created!', 'The city has been created.');
+            await dispatch(createCity(cityData as City));
             refreshData();
           }
         });
       } else {
         showConfirmationAlert('Update City', 'Are you sure you want to update this city?').then(async (result) => {
           if (result.isConfirmed) {
-            await dispatch(updateCity(selectedCity.cityId, cityData));
-            showSuccessAlert('Updated!', 'The city has been updated.');
+            await dispatch(updateCity(selectedCity.cityId, cityData as City));
             refreshData();
           }
         });

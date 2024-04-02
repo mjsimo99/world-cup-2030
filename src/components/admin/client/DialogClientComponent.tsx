@@ -4,7 +4,7 @@ import { Button } from 'primereact/button';
 import { updateClient } from '../../../redux/actions/clientAction';
 import Client from '../../../interfaces/client/Client';
 import { useAppDispatch } from '../../../redux/store';
-import { showConfirmationAlert, showSuccessAlert } from '../../../interceptor/sweetAlertUtils';
+import { showConfirmationAlert } from '../../../interceptor/sweetAlertUtils';
 
 
 interface DialogClientComponentProps {
@@ -16,13 +16,13 @@ interface DialogClientComponentProps {
 
 const DialogClientComponent: React.FC<DialogClientComponentProps> = ({ visible, onHide, refreshData, selectedClient }) => {
     const dispatch = useAppDispatch();
-    const [clientData, setClientData] = useState<Partial<Client>>({ firstName: '', lastName: '', dateOfBirth: '', phoneNumber: '', address: '', email: '', username: '', password: '' });
+    const [clientData, setClientData] = useState<Partial<Client>>({ firstName: '', lastName: '', dateOfBirth: '', phoneNumber: '', address: '', email: '', username: '', password: '' , money: 0});
 
     useEffect(() => {
         if (selectedClient) {
             setClientData(selectedClient);
         } else {
-            setClientData({ firstName: '', lastName: '', dateOfBirth: '', phoneNumber: '', address: '', email: '', username: '', password: '' });
+            setClientData({ firstName: '', lastName: '', dateOfBirth: '', phoneNumber: '', address: '', email: '', username: '', password: '' , money: 0});
         }
     }, [selectedClient]);
 
@@ -37,7 +37,6 @@ const DialogClientComponent: React.FC<DialogClientComponentProps> = ({ visible, 
                 showConfirmationAlert('Update clinet', 'Are you sure you want to update this client?').then(async (result) => {
                     if (result.isConfirmed) {
                         await dispatch(updateClient(selectedClient.clientId, clientData));
-                        showSuccessAlert('Updated!', 'The clinet has been updated.');
                         refreshData();
                     }
                 });
@@ -82,6 +81,10 @@ const DialogClientComponent: React.FC<DialogClientComponentProps> = ({ visible, 
             <label htmlFor="password" className='block text-gray-700'>Password</label>
             <input id="password" name="password" type="text" value={clientData.password} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
         </div> */}
+            <div className="p-field">
+                <label htmlFor="money" className='block text-gray-700'>Money</label>
+                <input id="money" name="money" type="number" value={clientData.money} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
+            </div>
             <div className="p-field flex justify-center items-center mt-4 mb-4">
                 <Button label="Save" onClick={handleSaveClient} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-3 w-20" />
                 <Button label="Cancel" onClick={onHide} className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded  w-24" />

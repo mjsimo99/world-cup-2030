@@ -6,7 +6,7 @@ import { createTeam, updateTeam } from '../../../redux/actions/teamActions';
 import Team from '../../../interfaces/team/Team';
 import { useAppDispatch } from '../../../redux/store';
 import { uploadFile } from '../../../redux/actions/fileActions';
-import { showConfirmationAlert, showSuccessAlert } from '../../../interceptor/sweetAlertUtils';
+import { showConfirmationAlert } from '../../../interceptor/sweetAlertUtils';
 
 interface DialogTeamFormProps {
   visible: boolean;
@@ -41,12 +41,15 @@ const DialogTeamForm: React.FC<DialogTeamFormProps> = ({ visible, onHide, refres
 
 
   const handleSaveTeam = async () => {
+    if (!teamData.country || !teamData.coach || !teamData.logo) {
+      alert('Please fill out all required fields.');
+      return;
+    }
     try {
       if (!selectedTeam) {
         showConfirmationAlert('Create Team', 'Are you sure you want to create a new team?').then(async (result) => {
           if (result.isConfirmed) {
             await dispatch(createTeam(teamData as Team));
-            showSuccessAlert('Created!', 'The team has been created.');
             refreshData();
           }
         });
@@ -54,7 +57,6 @@ const DialogTeamForm: React.FC<DialogTeamFormProps> = ({ visible, onHide, refres
         showConfirmationAlert('Update Team', 'Are you sure you want to update this team?').then(async (result) => {
           if (result.isConfirmed) {
             await dispatch(updateTeam(selectedTeam.teamId, teamData as Team));
-            showSuccessAlert('Updated!', 'The team has been updated.');
             refreshData();
           }
         });
@@ -69,15 +71,15 @@ const DialogTeamForm: React.FC<DialogTeamFormProps> = ({ visible, onHide, refres
     <Dialog header={selectedTeam ? 'Update Team' : 'Create Team'} visible={visible} style={{ width: '450px' }} modal className="p-fluid" onHide={onHide}>
       <div className="p-field mb-4">
         <label htmlFor="country" className='block text-gray-700'>Country</label>
-        <input id="country" name="country" type="text" value={teamData.country} onChange={handleInputChange} className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
+        <input id="country" name="country" type="text" value={teamData.country} onChange={handleInputChange} className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" required />
       </div>
       <div className="p-field mb-4">
         <label htmlFor="coach" className='block text-gray-700'>Coach</label>
-        <input id="coach" name="coach" type="text" value={teamData.coach} onChange={handleInputChange} className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
+        <input id="coach" name="coach" type="text" value={teamData.coach} onChange={handleInputChange} className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" required />
       </div>
       <div className="p-field mb-4">
         <label htmlFor="logo" className='block text-gray-700'>Logo</label>
-        <input id="logo" name="logo" type="file" onChange={handleInputChange} className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
+        <input id="logo" name="logo" type="file" onChange={handleInputChange} className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" required />
       </div>
       <div className="p-field flex justify-center items-center mt-4 mb-4">
         <Button label="Save" onClick={handleSaveTeam} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-3 w-20" />

@@ -11,7 +11,7 @@ import Client from '../../../interfaces/client/Client';
 import Match from '../../../interfaces/match/match';
 import { getClients } from '../../../redux/actions/clientAction';
 import { fetchMatches } from '../../../redux/actions/matchActions';
-import { showConfirmationAlert, showSuccessAlert } from '../../../interceptor/sweetAlertUtils';
+import { showConfirmationAlert } from '../../../interceptor/sweetAlertUtils';
 
 interface DialogTicketFormProps {
   visible: boolean;
@@ -42,12 +42,15 @@ const DialogTicketForm: React.FC<DialogTicketFormProps> = ({ visible, onHide, re
     };
 
     const handleSaveTicket = async () => {
+        if (!ticketData.quantity || !ticketData.client?.clientId || !ticketData.match?.matchId) {
+            alert('Please fill out all required fields.');
+            return;
+        }
         try {
             if (selectedTicket) {
                 showConfirmationAlert('Update Ticket', 'Are you sure you want to update this ticket?').then(async (result) => {
                     if (result.isConfirmed) {
                         await dispatch(updateTicket(selectedTicket.ticketId, ticketData));
-                        showSuccessAlert('Updated!', 'The ticket has been updated.');
                         refreshData();
                     }
                 });
@@ -55,7 +58,6 @@ const DialogTicketForm: React.FC<DialogTicketFormProps> = ({ visible, onHide, re
                 showConfirmationAlert('Create Ticket', 'Are you sure you want to create a new ticket?').then(async (result) => {
                     if (result.isConfirmed) {
                         await dispatch(createTicket(ticketData));
-                        showSuccessAlert('Created!', 'The ticket has been created.');
                         refreshData();
                     }
                 });
@@ -87,21 +89,25 @@ const DialogTicketForm: React.FC<DialogTicketFormProps> = ({ visible, onHide, re
         <Dialog header={selectedTicket ? 'Update Ticket' : 'Create Ticket'} visible={visible} style={{ width: '450px' }} modal className="p-fluid" onHide={onHide}>
             <div className="p-field mb-4">
                 <label htmlFor="quantity" className='block text-gray-700'>Quantity</label>
-                <input id="quantity" name="quantity" type="number" value={ticketData.quantity} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
+                <input id="quantity" name="quantity" type="number" value={ticketData.quantity} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" required min={1} max={4} />
             </div>
             <div className="p-field mb-4">
                 <label htmlFor="client" className='block text-gray-700'>Client</label>
-                <select id="client" name="client" value={ticketData.client?.clientId} onChange={(e) => handleClientChange(Number(e.target.value))} className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                <select id="client" name="client" value={ticketData.client?.clientId} onChange={(e) => handleClientChange(Number(e.target.value))} className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" required >
                     <option value="">Select Client</option>
-                    {clients.map(client => <option key={client.clientId} value={client.clientId}>{client.firstName}{client.lastName}</option>)}
+                    {clients.map(client => <option key={client.clientId} value={client.clientId}>{client.firstName} {client.lastName}</option>)}
                 </select>
             </div>
             <div className="p-field mb-4">
                 <label htmlFor="match" className='block text-gray-700'>Match</label>
-                <select id="match" name="match" value={ticketData.match?.matchId} onChange={(e) => handleMatchChange(Number(e.target.value))} className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                <select id="match" name="match" value={ticketData.match?.matchId} onChange={(e) => handleMatchChange(Number(e.target.value))} className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" required >
                     <option value="">Select Match</option>
                     {matches.map(match => <option key={match.matchId} value={match.matchId}>{match.name} </option>)}
                 </select>
+            </div>
+            <div className="p-field mb-4">
+                <label htmlFor="totalPrice" className='hidden text-gray-700'>Total Price</label>
+                <input id="totalPrice" name="totalPrice" type="hidden" value={0} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" required />
             </div>
             <div className="p-field flex justify-center items-center mt-4 mb-4">
                 <Button label="Save" onClick={handleSaveTicket} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-3 w-20" />

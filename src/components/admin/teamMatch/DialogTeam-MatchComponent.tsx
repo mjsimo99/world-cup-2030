@@ -11,7 +11,7 @@ import { getTeams } from '../../../redux/actions/teamActions';
 import { fetchMatches } from '../../../redux/actions/matchActions';
 import Team from '../../../interfaces/team/Team';
 import Match from '../../../interfaces/match/match';
-import { showConfirmationAlert, showSuccessAlert } from '../../../interceptor/sweetAlertUtils';
+import { showConfirmationAlert } from '../../../interceptor/sweetAlertUtils';
 
 interface DialogTeamMatchComponentProps {
   visible: boolean;
@@ -54,7 +54,6 @@ const DialogTeamMatchComponent: React.FC<DialogTeamMatchComponentProps> = ({ vis
         showConfirmationAlert('Update Team Match', 'Are you sure you want to update this team match?').then(async (result) => {
           if (result.isConfirmed) {
             await dispatch(updateTeamMatch(selectedTeamMatch.team.teamId, selectedTeamMatch.match.matchId, teamMatchData));
-            showSuccessAlert('Updated!', 'The team match has been updated.');
             refreshData();
           }
         });
@@ -62,7 +61,6 @@ const DialogTeamMatchComponent: React.FC<DialogTeamMatchComponentProps> = ({ vis
         showConfirmationAlert('Create Team Match', 'Are you sure you want to create a new team match?').then(async (result) => {
           if (result.isConfirmed) {
             await dispatch(createTeamMatch(teamMatchData));
-            showSuccessAlert('Created!', 'The team match has been created.');
             refreshData();
           }
         });
@@ -92,7 +90,7 @@ const DialogTeamMatchComponent: React.FC<DialogTeamMatchComponentProps> = ({ vis
             <select name="matchId" value={teamMatchData.matchId} onChange={(e) => setTeamMatchData(prevData => ({ ...prevData, matchId: parseInt(e.target.value) }))} className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
               <option value="">Select Match</option>
               {matches.map(match => (
-                <option key={match.matchId} value={match.matchId}>{match.matchId}</option>
+                <option key={match.matchId} value={match.matchId}>{match.name}</option>
               ))}
             </select>
           </div>
@@ -100,15 +98,15 @@ const DialogTeamMatchComponent: React.FC<DialogTeamMatchComponentProps> = ({ vis
       )}
       <div className="p-field mb-4 mt-4">
         <label htmlFor="teamsName">Team Name</label>
-        <input id="teamsName" name="teamsName" type="text" value={teamMatchData.teamsName} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
+        <input id="teamsName" name="teamsName" type="text" value={teamMatchData.teamsName} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" required />
       </div>
       <div className="p-field mb-4">
         <label htmlFor="date">Date</label>
-        <input id="date" name="date" type="date" value={teamMatchData.date} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
+        <input id="date" name="date" type="date" value={teamMatchData.date} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" required min={new Date().toISOString().split('T')[0]} />
       </div>
       <div className="p-field mb-4">
         <label htmlFor="time">Time</label>
-        <input id="time" name="time" type="time" value={teamMatchData.time} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
+        <input id="time" name="time" type="time" value={teamMatchData.time} onChange={handleChange} className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" required/>
       </div>
       <div className="p-field flex justify-center items-center">
         <Button label="Save" onClick={handleSaveTeamMatch} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-3" />
