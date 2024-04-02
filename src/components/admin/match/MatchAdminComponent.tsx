@@ -10,7 +10,7 @@ import Match from '../../../interfaces/match/match';
 import DialogComponent from './DialogMatchComponent';
 import { useAppDispatch } from '../../../redux/store';
 import { RootState } from '../../../redux/reducers/RootState';
-import { showConfirmationAlert, showSuccessAlert } from '../../../interceptor/sweetAlertUtils';
+import { showConfirmationAlert } from '../../../interceptor/sweetAlertUtils';
 
 
 const MatchAdminComponent: React.FC = () => {
@@ -33,7 +33,6 @@ const MatchAdminComponent: React.FC = () => {
         showConfirmationAlert('Delete Match', 'Are you sure you want to delete this match?').then(async (result) => {
             if (result.isConfirmed) {
                 await dispatch(deleteMatch(matchId));
-                showSuccessAlert('Deleted!', 'The match has been deleted.');
                 refreshData();
             }
         });

@@ -1,5 +1,5 @@
 import { Dispatch } from 'redux';
-import { GET_MATCHES, DELETE_MATCH, CREATE_MATCH, UPDATE_MATCH } from './actionTypes'; // Assuming you have actionTypes defined
+import { GET_MATCHES, DELETE_MATCH, CREATE_MATCH, UPDATE_MATCH, GET_MATCH_BY_ID } from './actionTypes'; // Assuming you have actionTypes defined
 import ApiMatch from '../api/apiMatch';
 import Match from '../../interfaces/match/match';
 
@@ -26,25 +26,38 @@ export const deleteMatch = (matchId: number) => {
 }
 
 export const createMatch = (matchData: Partial<Match>) => {
-    return async (dispatch: Dispatch) => {
-      try {
-        const createdMatch = await ApiMatch.createMatch(matchData);
-        dispatch({ type: CREATE_MATCH, payload: createdMatch });
-        return createdMatch;
-      } catch (error) {
-        console.error("Error creating match:", error);
-        throw error; 
-      }
+  return async (dispatch: Dispatch) => {
+    try {
+      const createdMatch = await ApiMatch.createMatch(matchData);
+      dispatch({ type: CREATE_MATCH, payload: createdMatch });
+      return createdMatch;
+    } catch (error) {
+      console.error("Error creating match:", error);
+      throw error;
     }
   }
+}
 
 export const updateMatch = (matchId: number, matchData: Partial<Match>) => {
-    return async (dispatch: Dispatch) => {
-        try {
-        const updatedMatch = await ApiMatch.updateMatch(matchId, matchData);
-        dispatch({ type: UPDATE_MATCH, payload: updatedMatch });
-        } catch (error) {
-        console.error("Error updating match:", error);
-        }
+  return async (dispatch: Dispatch) => {
+    try {
+      const updatedMatch = await ApiMatch.updateMatch(matchId, matchData);
+      dispatch({ type: UPDATE_MATCH, payload: updatedMatch });
+    } catch (error) {
+      console.error("Error updating match:", error);
     }
+  }
+}
+
+export const getMatchById = (matchId: number) => {
+  return async (dispatch: Dispatch) => {
+    try {
+      const match = await ApiMatch.getMatchById(matchId);
+      dispatch({ type: GET_MATCH_BY_ID, payload: match });
+      return match; 
+    } catch (error) {
+      console.error("Error fetching match:", error);
+      throw error;
     }
+  };
+};

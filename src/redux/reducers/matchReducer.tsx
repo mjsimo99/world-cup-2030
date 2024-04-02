@@ -46,6 +46,13 @@ const matchReducer = (state = initialState, action: any) => {
                 loading: false,
                 error: null,
             };
+        case actionTypes.GET_MATCH_BY_ID:
+            return {
+                ...state,
+                matches: [action.payload],
+                loading: false,
+                error: null,
+            };
         default:
             return state;
     }
