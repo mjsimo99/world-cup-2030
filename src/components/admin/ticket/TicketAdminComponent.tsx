@@ -1,5 +1,5 @@
 // TicketAdminComponent.tsx
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
@@ -11,7 +11,7 @@ import Ticket from '../../../interfaces/ticket/Ticket';
 import DialogTicketForm from './DialogTicketComponent';
 import { useAppDispatch } from '../../../redux/store';
 import { RootState } from '../../../redux/reducers/RootState';
-import { showConfirmationAlert, showSuccessAlert } from '../../../interceptor/sweetAlertUtils';
+import { showConfirmationAlert } from '../../../interceptor/sweetAlertUtils';
 
 const TicketAdminComponent: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -33,7 +33,6 @@ const TicketAdminComponent: React.FC = () => {
         showConfirmationAlert('Delete Ticket', 'Are you sure you want to delete this ticket?').then(async (result) => {
             if (result.isConfirmed) {
                 await dispatch(deleteTicket(ticketId));
-                showSuccessAlert('Deleted!', 'The ticket has been deleted.');
                 refreshData();
             }
         });
@@ -54,7 +53,8 @@ const TicketAdminComponent: React.FC = () => {
                 currentPageReportTemplate="{first} to {last} of {totalRecords}">
                 <Column field="quantity" header="Quantity"></Column>
                 <Column field="client.firstName" header="Client"></Column>
-                <Column header="Match" body={(rowData: Ticket) => <span>{rowData.match?.name}</span>} />
+                <Column field="match.name" header="Match"></Column>
+                <Column field="totalPrice" header="Total Price"></Column>
                 <Column header="Action" headerStyle={{ width: '8rem' }} body={(rowData: Ticket) => (
                     <div className='flex'>
                         <Button icon="pi pi-pencil" className="p-button-rounded p-button-info mr-2" onClick={() => handleUpdateTicket(rowData)} />

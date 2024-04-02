@@ -49,3 +49,15 @@ export const updateTicket = (ticketId: number, ticketData: Partial<Ticket>) => {
         }
     };
     };
+
+export const fetchTicketsByClientId = (clientId: number) => {
+    return async (dispatch: Dispatch) => {
+        try {
+        const tickets = await ApiTicket.fetchTicketsByClientId(clientId);
+        dispatch({ type: GET_TICKETS, payload: tickets });
+        } catch (error) {
+        console.error("Error fetching tickets by client id:", error);
+        dispatch({ type: GET_TICKETS_ERROR, payload: error });
+        }
+    };
+    }
